@@ -2,7 +2,7 @@
 
 import { useState, useEffect, createContext, useContext } from "react";
 import { PetraWallet, PetraWalletName } from "petra-plugin-wallet-adapter";
-import { checkPokeCoinBalance } from "../utils/pokeUtils";
+import { checkPokeCoinBalance, POKECOIN_DECIMALS } from "../utils/pokeUtils";
 
 // Create a context to share wallet state
 const WalletContext = createContext<{
@@ -11,36 +11,26 @@ const WalletContext = createContext<{
   connected: boolean;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
+  balance: number | null;
 }>({
   wallet: null,
   account: null,
   connected: false,
   connect: async () => {},
   disconnect: async () => {},
+  balance: null,
 });
 
 export const useWallet = () => useContext(WalletContext);
 
 // Simplified wallet connector that only supports Petra wallet
 export function WalletConnectButton() {
-  const { connect, account, disconnect, connected } = useWallet();
-  const [pokeCoinBalance, setPokeCoinBalance] = useState<number | null>(null);
+  const { connect, account, disconnect, connected, balance } = useWallet();
 
-  // Fetch PokeCoin balance when connected
-  useEffect(() => {
-    if (connected && account) {
-      const fetchBalance = async () => {
-        const balance = await checkPokeCoinBalance(account);
-        setPokeCoinBalance(balance);
-      };
-
-      fetchBalance();
-
-      // Refresh balance every 30 seconds
-      const intervalId = setInterval(fetchBalance, 30000);
-      return () => clearInterval(intervalId);
-    }
-  }, [connected, account]);
+  // Format the balance
+  const formattedBalance = balance
+    ? (balance / POKECOIN_DECIMALS).toFixed(2)
+    : "0.00";
 
   return (
     <div className="wallet-connect">
@@ -53,9 +43,7 @@ export function WalletConnectButton() {
           <span className="wallet-address">
             {account?.slice(0, 6)}...{account?.slice(-4)}
           </span>
-          {pokeCoinBalance !== null && (
-            <span className="pokecoin-balance">{pokeCoinBalance} PokeCoin</span>
-          )}
+          <span className="pokecoin-balance">{formattedBalance} PokeCoin</span>
           <button onClick={disconnect} className="disconnect-button">
             Disconnect
           </button>
@@ -74,6 +62,7 @@ export function AptosWalletProvider({
   const [wallet, setWallet] = useState<any>(null);
   const [account, setAccount] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
 
   useEffect(() => {
     // Check if Petra is available in the browser
@@ -88,6 +77,8 @@ export function AptosWalletProvider({
             const acc = await window.aptos.account();
             setAccount(acc.address);
             setConnected(true);
+            const balance = await checkPokeCoinBalance(acc.address);
+            setBalance(balance);
           }
         }
       } catch (error) {
@@ -96,7 +87,26 @@ export function AptosWalletProvider({
     };
 
     checkPetraAvailability();
-  }, []);
+
+    // Add balance fetching logic
+    async function fetchBalance() {
+      if (connected && account) {
+        try {
+          const pokeCoinBalance = await checkPokeCoinBalance(account);
+          setBalance(pokeCoinBalance);
+        } catch (error) {
+          console.error("Error fetching balance:", error);
+        }
+      }
+    }
+
+    fetchBalance();
+
+    // Set up a refresh interval
+    const intervalId = setInterval(fetchBalance, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(intervalId);
+  }, [account, connected]);
 
   const connect = async () => {
     if (!wallet) {
@@ -108,6 +118,8 @@ export function AptosWalletProvider({
       const response = await wallet.connect();
       setAccount(response.address);
       setConnected(true);
+      const balance = await checkPokeCoinBalance(response.address);
+      setBalance(balance);
 
       // Enhanced logging
       console.log("=== WALLET CONNECTION INFO ===");
@@ -127,6 +139,7 @@ export function AptosWalletProvider({
         await wallet.disconnect();
         setAccount(null);
         setConnected(false);
+        setBalance(null);
 
         // Clear the global address
         window.connectedWalletAddress = null;
@@ -138,7 +151,7 @@ export function AptosWalletProvider({
 
   return (
     <WalletContext.Provider
-      value={{ wallet, account, connected, connect, disconnect }}
+      value={{ wallet, account, connected, connect, disconnect, balance }}
     >
       {children}
     </WalletContext.Provider>

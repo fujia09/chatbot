@@ -13,6 +13,9 @@ const RECIPIENT_ADDRESS = "0xe25731e7c9f3b3ed16ea39c0d2b575d7d10c854bb113efdf6cb
 const GRAPHQL_URL = "https://indexer.mainnet.aptoslabs.com/v1/graphql";
 const NODE_URL = "https://fullnode.mainnet.aptoslabs.com/v1";
 
+// Add this constant at the top of the file
+export const POKECOIN_DECIMALS = 1000000; // 1 PokeCoin = 1,000,000 units
+
 /**
  * Check if a wallet has enough PokeCoin balance using GraphQL
  */
@@ -69,8 +72,10 @@ export async function checkPokeCoinBalance(walletAddress: string): Promise<numbe
       
       // Check if this is PokeCoin by looking for the address in the asset_type
       if (balance.asset_type.includes(POKECOIN_ADDRESS)) {
-        console.log("Found PokeCoin balance:", balance.amount);
-        return parseInt(balance.amount);
+        const rawAmount = parseInt(balance.amount);
+        const pokeCoins = rawAmount / POKECOIN_DECIMALS;
+        console.log("Found PokeCoin balance:", rawAmount, `(${pokeCoins} PokeCoin)`);
+        return rawAmount;
       }
     }
     
@@ -91,7 +96,7 @@ export async function sendPokeCoin(wallet: any): Promise<boolean> {
       throw new Error("Wallet not connected");
     }
     
-    console.log(`Attempting to send 1 PokeCoin to ${RECIPIENT_ADDRESS} using primary_fungible_store::transfer`);
+    console.log(`Attempting to send 1 PokeCoin (${POKECOIN_DECIMALS} units) to ${RECIPIENT_ADDRESS}`);
     
     // Use the primary_fungible_store::transfer function with the correct type parameters
     const payload = {
@@ -103,7 +108,7 @@ export async function sendPokeCoin(wallet: any): Promise<boolean> {
       arguments: [
         POKECOIN_ADDRESS,   // metadata: Object<T>
         RECIPIENT_ADDRESS,  // recipient: address
-        "1"                 // amount: u64
+        POKECOIN_DECIMALS.toString() // amount: u64 - Send 1,000,000 units = 1 PokeCoin
       ]
     };
     
@@ -142,7 +147,7 @@ export async function sendPokeCoinAlternative(wallet: any): Promise<boolean> {
       throw new Error("Wallet not connected");
     }
     
-    console.log(`Attempting to send 1 PokeCoin to ${RECIPIENT_ADDRESS} using primary_fungible_store::transfer with a different type parameter`);
+    console.log(`Attempting to send 1 PokeCoin (${POKECOIN_DECIMALS} units) using alternative method`);
     
     // Try with primary_fungible_store::transfer but a different type parameter
     const payload = {
@@ -154,7 +159,7 @@ export async function sendPokeCoinAlternative(wallet: any): Promise<boolean> {
       arguments: [
         POKECOIN_ADDRESS,   // metadata: Object<T>
         RECIPIENT_ADDRESS,  // recipient: address
-        "1"                 // amount: u64
+        POKECOIN_DECIMALS.toString() // amount: u64 - Send 1,000,000 units = 1 PokeCoin
       ]
     };
     
@@ -193,7 +198,7 @@ export async function sendPokeCoinUsingCoin(wallet: any): Promise<boolean> {
       throw new Error("Wallet not connected");
     }
     
-    console.log(`Attempting to send 1 PokeCoin to ${RECIPIENT_ADDRESS} using coin::transfer`);
+    console.log(`Attempting to send 1 PokeCoin (${POKECOIN_DECIMALS} units) using coin::transfer`);
     
     // Try with the standard coin transfer
     const payload = {
@@ -204,7 +209,7 @@ export async function sendPokeCoinUsingCoin(wallet: any): Promise<boolean> {
       ],
       arguments: [
         RECIPIENT_ADDRESS, // Recipient address
-        "1"               // Amount to transfer (1 PokeCoin)
+        POKECOIN_DECIMALS.toString() // amount: u64 - Send 1,000,000 units = 1 PokeCoin
       ]
     };
     

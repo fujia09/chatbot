@@ -13,6 +13,7 @@ import {
   sendPokeCoin,
   sendPokeCoinAlternative,
   sendPokeCoinUsingCoin,
+  POKECOIN_DECIMALS,
 } from "@/app/utils/pokeUtils";
 
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
@@ -25,6 +26,7 @@ export function ChatWindow(props: {
   titleText?: string;
   emoji?: string;
   showIntermediateStepsToggle?: boolean;
+  balance?: number;
 }) {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const { wallet, account, connected } = useWallet();
@@ -37,6 +39,7 @@ export function ChatWindow(props: {
     titleText = "An LLM",
     showIntermediateStepsToggle,
     emoji,
+    balance = 0,
   } = props;
 
   const [showIntermediateSteps, setShowIntermediateSteps] = useState(false);
@@ -92,6 +95,10 @@ export function ChatWindow(props: {
       });
     },
   });
+
+  const formatPokeCoinBalance = (rawBalance: number) => {
+    return (rawBalance / POKECOIN_DECIMALS).toFixed(2);
+  };
 
   async function sendMessage(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
