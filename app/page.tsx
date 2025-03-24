@@ -37,8 +37,8 @@ function HomeContent() {
 
   const InfoCard = (
     <div className="p-4 md:p-8 rounded bg-[#25252d] w-full max-h-[85%] overflow-hidden">
-      <h1 className="text-3xl md:text-4xl mb-4">Aptos Poke Chatbot</h1>
-      <h2>1 prompt = 1 PokeCoin</h2>
+      <h1 className="text-3xl md:text-4xl mb-4">Aptos Info Chatbot</h1>
+      <h2>1 prompt = 1 AptosInfoCoin</h2>
     </div>
   );
 

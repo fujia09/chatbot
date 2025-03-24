@@ -133,10 +133,16 @@ export function ChatWindow(props: {
       const balance = await checkPokeCoinBalance(account);
       console.log("PokeCoin balance:", balance);
 
-      if (balance < 1) {
-        toast.error("You need at least 1 PokeCoin to use the chatbot", {
-          theme: "dark",
-        });
+      // Check if balance is sufficient (at least 1 AptosInfoCoin)
+      if (balance < POKECOIN_DECIMALS) {
+        toast.error(
+          `You need at least 1 AptosInfoCoin to use the chatbot. Your balance: ${formatPokeCoinBalance(
+            balance
+          )} AptosInfoCoin`,
+          {
+            theme: "dark",
+          }
+        );
         setIsProcessingPayment(false);
         return;
       }
@@ -178,7 +184,7 @@ export function ChatWindow(props: {
         return;
       }
 
-      toast.success("Successfully sent 1 PokeCoin for this chat", {
+      toast.success("Successfully sent 1 AptosInfoCoin for this chat", {
         theme: "dark",
       });
     } catch (error) {

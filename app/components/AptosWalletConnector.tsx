@@ -43,7 +43,9 @@ export function WalletConnectButton() {
           <span className="wallet-address">
             {account?.slice(0, 6)}...{account?.slice(-4)}
           </span>
-          <span className="pokecoin-balance">{formattedBalance} PokeCoin</span>
+          <span className="pokecoin-balance">
+            {formattedBalance} AptosInfoCoin
+          </span>
           <button onClick={disconnect} className="disconnect-button">
             Disconnect
           </button>

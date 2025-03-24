@@ -12,7 +12,7 @@ return (
       <>
         <span className="address">{shortenAddress(account?.address)}</span>
         <span className="balance">
-          {formatPokeCoinBalance(balance)} PokeCoin
+          {formatPokeCoinBalance(balance)} AptosInfoCoin
         </span>
       </>
     ) : (
