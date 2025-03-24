@@ -141,100 +141,100 @@ export async function sendPokeCoin(wallet: any): Promise<boolean> {
 /**
  * Alternative implementation to send 1 AptosInfoCoin
  */
-export async function sendPokeCoinAlternative(wallet: any): Promise<boolean> {
-  try {
-    if (!wallet) {
-      throw new Error("Wallet not connected");
-    }
+// export async function sendPokeCoinAlternative(wallet: any): Promise<boolean> {
+//   try {
+//     if (!wallet) {
+//       throw new Error("Wallet not connected");
+//     }
     
-    console.log(`Attempting to send 1 AptosInfoCoin (${POKECOIN_DECIMALS} units) using alternative method`);
+//     console.log(`Attempting to send 1 AptosInfoCoin (${POKECOIN_DECIMALS} units) using alternative method`);
     
-    // Try with primary_fungible_store::transfer but a different type parameter
-    const payload = {
-      type: "entry_function_payload",
-      function: "0x1::primary_fungible_store::transfer",
-      type_arguments: [
-        `${POKECOIN_ADDRESS}::fungible_asset::FungibleAsset` // Try a different type parameter
-      ],
-      arguments: [
-        POKECOIN_ADDRESS,   // metadata: Object<T>
-        RECIPIENT_ADDRESS,  // recipient: address
-        POKECOIN_DECIMALS.toString() // amount: u64 - Send 1,000,000 units = 1 AptosInfoCoin
-      ]
-    };
+//     // Try with primary_fungible_store::transfer but a different type parameter
+//     const payload = {
+//       type: "entry_function_payload",
+//       function: "0x1::primary_fungible_store::transfer",
+//       type_arguments: [
+//         `${POKECOIN_ADDRESS}::fungible_asset::FungibleAsset` // Try a different type parameter
+//       ],
+//       arguments: [
+//         POKECOIN_ADDRESS,   // metadata: Object<T>
+//         RECIPIENT_ADDRESS,  // recipient: address
+//         POKECOIN_DECIMALS.toString() // amount: u64 - Send 1,000,000 units = 1 AptosInfoCoin
+//       ]
+//     };
     
-    console.log("Submitting transaction with payload:", payload);
+//     console.log("Submitting transaction with payload:", payload);
     
-    // Sign and submit the transaction
-    const transaction = await wallet.signAndSubmitTransaction(payload);
+//     // Sign and submit the transaction
+//     const transaction = await wallet.signAndSubmitTransaction(payload);
     
-    console.log("Transaction submitted:", transaction);
+//     console.log("Transaction submitted:", transaction);
     
-    // Wait for transaction confirmation
-    const client = new Types.Client("https://fullnode.mainnet.aptoslabs.com/v1");
-    await client.waitForTransaction(transaction.hash);
+//     // Wait for transaction confirmation
+//     const client = new Types.Client("https://fullnode.mainnet.aptoslabs.com/v1");
+//     await client.waitForTransaction(transaction.hash);
     
-    console.log("Successfully sent 1 AptosInfoCoin", transaction.hash);
-    return true;
-  } catch (error) {
-    console.error("Error sending AptosInfoCoin:", error);
+//     console.log("Successfully sent 1 AptosInfoCoin", transaction.hash);
+//     return true;
+//   } catch (error) {
+//     console.error("Error sending AptosInfoCoin:", error);
     
-    // For development/testing, return success anyway if needed
-    if (process.env.NODE_ENV === 'development') {
-      console.log("Development mode: Returning success despite error");
-      return true;
-    }
+//     // For development/testing, return success anyway if needed
+//     if (process.env.NODE_ENV === 'development') {
+//       console.log("Development mode: Returning success despite error");
+//       return true;
+//     }
     
-    return false;
-  }
-}
+//     return false;
+//   }
+// }
 
 /**
  * Try sending AptosInfoCoin using the standard coin transfer
  */
-export async function sendPokeCoinUsingCoin(wallet: any): Promise<boolean> {
-  try {
-    if (!wallet) {
-      throw new Error("Wallet not connected");
-    }
+// export async function sendPokeCoinUsingCoin(wallet: any): Promise<boolean> {
+//   try {
+//     if (!wallet) {
+//       throw new Error("Wallet not connected");
+//     }
     
-    console.log(`Attempting to send 1 AptosInfoCoin (${POKECOIN_DECIMALS} units) using coin::transfer`);
+//     console.log(`Attempting to send 1 AptosInfoCoin (${POKECOIN_DECIMALS} units) using coin::transfer`);
     
-    // Try with the standard coin transfer
-    const payload = {
-      type: "entry_function_payload",
-      function: "0x1::coin::transfer",
-      type_arguments: [
-        `${POKECOIN_ADDRESS}::fungible_asset::PokeCoin` // Try a different type parameter
-      ],
-      arguments: [
-        RECIPIENT_ADDRESS, // Recipient address
-        POKECOIN_DECIMALS.toString() // amount: u64 - Send 1,000,000 units = 1 AptosInfoCoin
-      ]
-    };
+//     // Try with the standard coin transfer
+//     const payload = {
+//       type: "entry_function_payload",
+//       function: "0x1::coin::transfer",
+//       type_arguments: [
+//         `${POKECOIN_ADDRESS}::fungible_asset::PokeCoin` // Try a different type parameter
+//       ],
+//       arguments: [
+//         RECIPIENT_ADDRESS, // Recipient address
+//         POKECOIN_DECIMALS.toString() // amount: u64 - Send 1,000,000 units = 1 AptosInfoCoin
+//       ]
+//     };
     
-    console.log("Submitting transaction with payload:", payload);
+//     console.log("Submitting transaction with payload:", payload);
     
-    // Sign and submit the transaction
-    const transaction = await wallet.signAndSubmitTransaction(payload);
+//     // Sign and submit the transaction
+//     const transaction = await wallet.signAndSubmitTransaction(payload);
     
-    console.log("Transaction submitted:", transaction);
+//     console.log("Transaction submitted:", transaction);
     
-    // Wait for transaction confirmation
-    const client = new Types.Client("https://fullnode.mainnet.aptoslabs.com/v1");
-    await client.waitForTransaction(transaction.hash);
+//     // Wait for transaction confirmation
+//     const client = new Types.Client("https://fullnode.mainnet.aptoslabs.com/v1");
+//     await client.waitForTransaction(transaction.hash);
     
-    console.log("Successfully sent 1 AptosInfoCoin", transaction.hash);
-    return true;
-  } catch (error) {
-    console.error("Error sending AptosInfoCoin:", error);
+//     console.log("Successfully sent 1 AptosInfoCoin", transaction.hash);
+//     return true;
+//   } catch (error) {
+//     console.error("Error sending AptosInfoCoin:", error);
     
-    // For development/testing, return success anyway if needed
-    if (process.env.NODE_ENV === 'development') {
-      console.log("Development mode: Returning success despite error");
-      return true;
-    }
+//     // For development/testing, return success anyway if needed
+//     if (process.env.NODE_ENV === 'development') {
+//       console.log("Development mode: Returning success despite error");
+//       return true;
+//     }
     
-    return false;
-  }
-}
+//     return false;
+//   }
+// }
