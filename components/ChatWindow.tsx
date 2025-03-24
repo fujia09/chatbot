@@ -152,28 +152,45 @@ export function ChatWindow(props: {
       try {
         // Try the primary method first
         sendSuccess = await sendPokeCoin(wallet);
+
+        if (sendSuccess) {
+          toast.success("Successfully sent 1 AptosInfoCoin for this chat", {
+            theme: "dark",
+          });
+        } else {
+          toast.error("Transaction was not processed. Please try again.", {
+            theme: "dark",
+          });
+          setIsProcessingPayment(false);
+          return;
+        }
       } catch (error) {
-        console.error("Error with primary method:", error);
-      }
+        console.error("Error with payment method:", error);
 
-      // If the primary method failed, try the alternative
-      if (!sendSuccess) {
-        try {
-          console.log("Trying alternative method...");
-          sendSuccess = await sendPokeCoinAlternative(wallet);
-        } catch (error) {
-          console.error("Error with alternative method:", error);
+        // Check if this is a user rejection
+        if (
+          error.message &&
+          (error.message.includes("User rejected") ||
+            error.message.includes("cancelled") ||
+            error.message.includes("canceled") ||
+            error.message.includes("rejected") ||
+            error.message.includes("denied"))
+        ) {
+          toast.info("Transaction was cancelled", {
+            theme: "dark",
+          });
+        } else {
+          toast.error(
+            "Error processing AptosInfoCoin payment: " +
+              (error.message || "Unknown error"),
+            {
+              theme: "dark",
+            }
+          );
         }
-      }
 
-      // If both methods failed, try the coin method
-      if (!sendSuccess) {
-        try {
-          console.log("Trying coin method...");
-          sendSuccess = await sendPokeCoinUsingCoin(wallet);
-        } catch (error) {
-          console.error("Error with coin method:", error);
-        }
+        setIsProcessingPayment(false);
+        return;
       }
 
       if (!sendSuccess) {
