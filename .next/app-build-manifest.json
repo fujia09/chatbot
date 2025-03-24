@@ -1,43 +1,21 @@
 {
   "pages": {
-    "/_not-found/page": [
-      "static/chunks/webpack-e20ea4934040d953.js",
-      "static/chunks/86d40ff3-6c4759916cbd93e8.js",
-      "static/chunks/421-4593baaacd6c1863.js",
-      "static/chunks/main-app-c4195b4ff444a83c.js",
-      "static/chunks/app/_not-found/page-895258ffb7bac6d5.js"
-    ],
     "/layout": [
-      "static/chunks/webpack-e20ea4934040d953.js",
-      "static/chunks/86d40ff3-6c4759916cbd93e8.js",
-      "static/chunks/421-4593baaacd6c1863.js",
-      "static/chunks/main-app-c4195b4ff444a83c.js",
-      "static/css/a144adce890086eb.css",
-      "static/chunks/app/layout-82eb0f4f72d68540.js"
-    ],
-    "/api/chat/route": [
-      "static/chunks/webpack-e20ea4934040d953.js",
-      "static/chunks/86d40ff3-6c4759916cbd93e8.js",
-      "static/chunks/421-4593baaacd6c1863.js",
-      "static/chunks/main-app-c4195b4ff444a83c.js",
-      "static/chunks/app/api/chat/route-fb85110c418fc1ea.js"
-    ],
-    "/api/hello/route": [
-      "static/chunks/webpack-e20ea4934040d953.js",
-      "static/chunks/86d40ff3-6c4759916cbd93e8.js",
-      "static/chunks/421-4593baaacd6c1863.js",
-      "static/chunks/main-app-c4195b4ff444a83c.js",
-      "static/chunks/app/api/hello/route-b53caaab31119617.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
     "/page": [
-      "static/chunks/webpack-e20ea4934040d953.js",
-      "static/chunks/86d40ff3-6c4759916cbd93e8.js",
-      "static/chunks/421-4593baaacd6c1863.js",
-      "static/chunks/main-app-c4195b4ff444a83c.js",
-      "static/css/e7eddfe4828c1690.css",
-      "static/chunks/2267893a-35f5226605911871.js",
-      "static/chunks/958-30793991917c7ad2.js",
-      "static/chunks/app/page-79be101cb80be6b6.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/page.css",
+      "static/chunks/app/page.js"
+    ],
+    "/api/hello/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/hello/route.js"
     ]
   }
 }

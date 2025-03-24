@@ -7,7 +7,7 @@ import { AptosClient, FungibleAssetClient, Provider, Network, Account } from "@a
 // const POKECOIN_ADDRESS = "0x066ebb982c492c0d5b1f2b8089756f83fd31d4516cd9a1fc0b63b4961e4eeafd";
 const POKECOIN_ADDRESS = "0xb6e33eae3e6875918b3178360845e35ba6de59f85fe71461a64207d5211ef8fd";
 // Recipient address for PokeCoin payments
-const RECIPIENT_ADDRESS = "0x66c41b25374a3c7be2b0e1a4df12c46fb4db6331224408c658980257a21a1406";
+const RECIPIENT_ADDRESS = "0x991116f7109cf49bff184086d89f8a69773d3ceda1817c35b9bd3c9baf8c64dd";
 
 // Use mainnet GraphQL endpoint
 const GRAPHQL_URL = "https://indexer.mainnet.aptoslabs.com/v1/graphql";
