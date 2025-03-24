@@ -1,12 +1,17 @@
 "use client";
 
 import { Types } from "aptos";
+import { AptosClient, FungibleAssetClient, Provider, Network, Account } from "@aptos-labs/ts-sdk";
 
 // PokeCoin module address
 const POKECOIN_ADDRESS = "0x066ebb982c492c0d5b1f2b8089756f83fd31d4516cd9a1fc0b63b4961e4eeafd";
 
+// Recipient address for PokeCoin payments
+const RECIPIENT_ADDRESS = "0xe25731e7c9f3b3ed16ea39c0d2b575d7d10c854bb113efdf6cb80b6c3d6e432e";
+
 // Use mainnet GraphQL endpoint
 const GRAPHQL_URL = "https://indexer.mainnet.aptoslabs.com/v1/graphql";
+const NODE_URL = "https://fullnode.mainnet.aptoslabs.com/v1";
 
 /**
  * Check if a wallet has enough PokeCoin balance using GraphQL
@@ -78,22 +83,28 @@ export async function checkPokeCoinBalance(walletAddress: string): Promise<numbe
 }
 
 /**
- * Burn 1 PokeCoin from the user's wallet
+ * Send 1 PokeCoin from the user's wallet to the recipient address
  */
-export async function burnPokeCoin(wallet: any): Promise<boolean> {
+export async function sendPokeCoin(wallet: any): Promise<boolean> {
   try {
     if (!wallet) {
       throw new Error("Wallet not connected");
     }
     
-    console.log("Attempting to burn PokeCoin with wallet");
+    console.log(`Attempting to send 1 PokeCoin to ${RECIPIENT_ADDRESS} using primary_fungible_store::transfer`);
     
-    // Create a transaction payload to burn 1 PokeCoin
+    // Use the primary_fungible_store::transfer function with the correct type parameters
     const payload = {
       type: "entry_function_payload",
-      function: `${POKECOIN_ADDRESS}::pokecoin::burn_asset`,
-      type_arguments: [],
-      arguments: ["1"] // Burn 1 PokeCoin
+      function: "0x1::primary_fungible_store::transfer",
+      type_arguments: [
+        "0x1::object::ObjectCore" // T: key parameter
+      ],
+      arguments: [
+        POKECOIN_ADDRESS,   // metadata: Object<T>
+        RECIPIENT_ADDRESS,  // recipient: address
+        "1"                 // amount: u64
+      ]
     };
     
     console.log("Submitting transaction with payload:", payload);
@@ -107,12 +118,12 @@ export async function burnPokeCoin(wallet: any): Promise<boolean> {
     const client = new Types.Client("https://fullnode.mainnet.aptoslabs.com/v1");
     await client.waitForTransaction(transaction.hash);
     
-    console.log("Successfully burned 1 PokeCoin", transaction.hash);
+    console.log("Successfully sent 1 PokeCoin", transaction.hash);
     return true;
   } catch (error) {
-    console.error("Error burning PokeCoin:", error);
+    console.error("Error sending PokeCoin:", error);
     
-    // For development/testing, return success anyway
+    // For development/testing, return success anyway if needed
     if (process.env.NODE_ENV === 'development') {
       console.log("Development mode: Returning success despite error");
       return true;
@@ -120,4 +131,105 @@ export async function burnPokeCoin(wallet: any): Promise<boolean> {
     
     return false;
   }
-} 
+}
+
+/**
+ * Alternative implementation to send 1 PokeCoin
+ */
+export async function sendPokeCoinAlternative(wallet: any): Promise<boolean> {
+  try {
+    if (!wallet) {
+      throw new Error("Wallet not connected");
+    }
+    
+    console.log(`Attempting to send 1 PokeCoin to ${RECIPIENT_ADDRESS} using primary_fungible_store::transfer with a different type parameter`);
+    
+    // Try with primary_fungible_store::transfer but a different type parameter
+    const payload = {
+      type: "entry_function_payload",
+      function: "0x1::primary_fungible_store::transfer",
+      type_arguments: [
+        `${POKECOIN_ADDRESS}::fungible_asset::FungibleAsset` // Try a different type parameter
+      ],
+      arguments: [
+        POKECOIN_ADDRESS,   // metadata: Object<T>
+        RECIPIENT_ADDRESS,  // recipient: address
+        "1"                 // amount: u64
+      ]
+    };
+    
+    console.log("Submitting transaction with payload:", payload);
+    
+    // Sign and submit the transaction
+    const transaction = await wallet.signAndSubmitTransaction(payload);
+    
+    console.log("Transaction submitted:", transaction);
+    
+    // Wait for transaction confirmation
+    const client = new Types.Client("https://fullnode.mainnet.aptoslabs.com/v1");
+    await client.waitForTransaction(transaction.hash);
+    
+    console.log("Successfully sent 1 PokeCoin", transaction.hash);
+    return true;
+  } catch (error) {
+    console.error("Error sending PokeCoin:", error);
+    
+    // For development/testing, return success anyway if needed
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Development mode: Returning success despite error");
+      return true;
+    }
+    
+    return false;
+  }
+}
+
+/**
+ * Try sending PokeCoin using the standard coin transfer
+ */
+export async function sendPokeCoinUsingCoin(wallet: any): Promise<boolean> {
+  try {
+    if (!wallet) {
+      throw new Error("Wallet not connected");
+    }
+    
+    console.log(`Attempting to send 1 PokeCoin to ${RECIPIENT_ADDRESS} using coin::transfer`);
+    
+    // Try with the standard coin transfer
+    const payload = {
+      type: "entry_function_payload",
+      function: "0x1::coin::transfer",
+      type_arguments: [
+        `${POKECOIN_ADDRESS}::fungible_asset::PokeCoin` // Try a different type parameter
+      ],
+      arguments: [
+        RECIPIENT_ADDRESS, // Recipient address
+        "1"               // Amount to transfer (1 PokeCoin)
+      ]
+    };
+    
+    console.log("Submitting transaction with payload:", payload);
+    
+    // Sign and submit the transaction
+    const transaction = await wallet.signAndSubmitTransaction(payload);
+    
+    console.log("Transaction submitted:", transaction);
+    
+    // Wait for transaction confirmation
+    const client = new Types.Client("https://fullnode.mainnet.aptoslabs.com/v1");
+    await client.waitForTransaction(transaction.hash);
+    
+    console.log("Successfully sent 1 PokeCoin", transaction.hash);
+    return true;
+  } catch (error) {
+    console.error("Error sending PokeCoin:", error);
+    
+    // For development/testing, return success anyway if needed
+    if (process.env.NODE_ENV === 'development') {
+      console.log("Development mode: Returning success despite error");
+      return true;
+    }
+    
+    return false;
+  }
+}

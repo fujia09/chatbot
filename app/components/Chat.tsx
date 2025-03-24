@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Message } from "ai";
-import { checkPokeCoinBalance, burnPokeCoin } from "../utils/pokeUtils";
+import { checkPokeCoinBalance, sendPokeCoin } from "../utils/pokeUtils";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -73,17 +73,17 @@ export function Chat() {
         return;
       }
 
-      // Burn 1 PokeCoin
+      // Send 1 PokeCoin to the recipient address
       const currentWallet = wallet || window.aptos;
-      const burnSuccess = await burnPokeCoin(currentWallet);
+      const sendSuccess = await sendPokeCoin(currentWallet);
 
-      if (!burnSuccess) {
+      if (!sendSuccess) {
         toast.error("Failed to process PokeCoin payment");
         setIsProcessingPayment(false);
         return;
       }
 
-      toast.success("Successfully burned 1 PokeCoin for this chat");
+      toast.success("Successfully sent 1 PokeCoin for this chat");
     } catch (error) {
       console.error("Error processing PokeCoin payment:", error);
       toast.error("Error processing PokeCoin payment");
